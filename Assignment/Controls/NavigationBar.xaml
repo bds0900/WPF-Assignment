@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="Assignment.Controls.NavigationBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Assignment.Controls"
+             xmlns:nav="clr-namespace:Assignment.State.Navigators"
+             xmlns:vm="clr-namespace:Assignment.ViewModels"
+             xmlns:converters="clr-namespace:Assignment.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:EqualValueToParameterConverter x:Key="EqualValueToParameterConverter"/>
+    </UserControl.Resources>
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Background="{StaticResource BrushPrimary1}">
+            <TextBlock Grid.Row="0"  Padding="10" HorizontalAlignment="Right" Text="{Binding Authenticator.CurrentUser.UserName, StringFormat={}Welcome {0}}" FontSize="25"/>
+        </Grid>
+
+
+        <!--RenderOption is optional-->
+        <Grid Grid.Row="1" RenderOptions.EdgeMode="Aliased" Background="{StaticResource BrushPrimary1}">
+            <!--every radio button inside this grid is going to implicity be Navbutton-->
+            <Grid.Resources>
+                <Style TargetType="RadioButton" BasedOn="{StaticResource NavButton}"/>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!--Current DataContext is MainViewModel, and MainViewModel has Navigator as a property-->
+            <!--Converter converts current model to boolean value, this happens in EqualValueToParameterVonvert. This is oneway binding-->
+            <!--when button is clicked, ViewType is passed into UpdateCurrentViewModel -->
+            <RadioButton Grid.Column="0" Content="Meter to Feet" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding Navigator.CurrentViewModel,Converter={StaticResource ResourceKey=EqualValueToParameterConverter},Mode=OneWay, ConverterParameter={x:Type vm:MeterToFeetViewModel}}"
+                         Command="{Binding UpdateCurrentViewModelCommand}" CommandParameter="{x:Static nav:ViewType.MeterToFeet}"/>
+            <RadioButton Grid.Column="1" Content="Feet to Meter" HorizontalContentAlignment="Center"
+                         IsChecked="{Binding Navigator.CurrentViewModel,Converter={StaticResource ResourceKey=EqualValueToParameterConverter},Mode=OneWay, ConverterParameter={x:Type vm:FeetToMeterViewModel}}"
+                         Command="{Binding UpdateCurrentViewModelCommand}" CommandParameter="{x:Static nav:ViewType.FeetToMeter}"/>
+
+        </Grid>
+    </Grid>
+</UserControl>
